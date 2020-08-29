@@ -65,7 +65,7 @@ const remoteVideo = [
 
 const roomDetails = {
   roomId: null,
-  clients: [],
+  clients: {},
 };
 let hostDetails, userDetails, localStream, dataChannel;
 const rtcPeerConnectionList = {};
@@ -136,25 +136,29 @@ socket.on("roomCreated", () => {
 
 // (HOST) host finds its clients and manages
 socket.on("newUserJoinedRoom", ({ clientId, clientName }) => {
-  roomDetails.clients.push({
+  roomDetails.clients[clientId] = {
     clientId,
     clientName,
-  });
+    rtcPeerConnection: null,
+  };
   console.log("New Client details added ", roomDetails.clients);
 });
 
 socket.on("AUserLeftRoom", ({ clientId }) => {
   console.log("A user left room ", clientId);
-  roomDetails.clients.forEach((client, index) => {
-    if (client.clientId === clientId) {
-      roomDetails.clients.splice(index, 1);
-    }
-  });
+  if (clientId in roomDetails.clients) {
+    delete roomDetails.clients[clientId];
+  }
 });
 
 // (HOST) responding to ready request of CLIENT
-socket.on("ready", () => {
-  console.log("ready event callback handled by HOST");
+socket.on("ready", ({ roomId, clientId }) => {
+  console.log(
+    "ready event callback handled by HOST roomId " +
+      roomId +
+      " clientId " +
+      clientId
+  );
 
   // (HOST) Creating new RTC Connection
   rtcPeerConnection = new RTCPeerConnection(iceServer);
