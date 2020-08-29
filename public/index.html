@@ -1,23 +1,28 @@
 <!DOCTYPE html>
 <head>
-  <title>Simple WebRTC</title>
+  <title>Simple Client WebRTC</title>
 </head>
 <body>
-  <h1>Simple WebRTC</h1>
+  <h1>Simple Client WebRTC</h1>
   <div id="selectRoom">
-    <label>Enter Room Name</label>
-    <input id="roomNumber" type="text" />
-    <button id="goRoom">Go</button>
+    <label>Room ID : </label>
+    <input id="roomId" type="text" />
+    <label>Your Name : </label>
+    <input id="userName" type="text" />
+    <button id="goRoom">Join Class</button>
   </div>
-  <div id="consultingRoom" style="display: none;">
-    <h2 id="callName"></h2>
+  <div id="consultingRoom" style="display: none">
+    <!-- <h2 id="callName"></h2>
     <p>
       <input id="inputCallName" type="text" />
       <button id="setCallName">Set</button>
-    </p>
-    <video id="localVideo" autoplay></video>
+    </p> -->
+    <p>HOST</p>
     <video id="remoteVideo" autoplay></video>
+    <p>Me Client</p>
+    <video id="localVideo" autoplay muted></video>
+    <button id="hungUp">Left Class</button>
   </div>
   <script src="/socket.io/socket.io.js"></script>
-  <script type="text/javascript" src="main.js"></script>
+  <script type="text/javascript" src="client.js"></script>
 </body>

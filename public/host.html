@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<head>
+  <title>Simple Host WebRTC</title>
+</head>
+<body>
+  <h1>Simple Host WebRTC</h1>
+  <div id="selectRoom">
+    <label>Room ID : </label>
+    <input id="roomId" type="text" />
+    <label>Your Name : </label>
+    <input id="userName" type="text" />
+    <button id="goRoom">Create Room</button>
+  </div>
+  <div id="consultingRoom" style="display: none">
+    <!-- <h2 id="callName"></h2>
+    <p>
+      <input id="inputCallName" type="text" />
+      <button id="setCallName">Set</button>
+    </p> -->
+    <p>Me HOST</p>
+    <video id="localVideo" autoplay muted></video>
+    <button id="hungUp">Destroy Room</button>
+    <p>Clients</p>
+    <video id="remoteVideo0" autoplay></video>
+    <video id="remoteVideo1" autoplay></video>
+    <video id="remoteVideo2" autoplay></video>
+    <video id="remoteVideo3" autoplay></video>
+    <video id="remoteVideo4" autoplay></video>
+    <video id="remoteVideo5" autoplay></video>
+    <video id="remoteVideo6" autoplay></video>
+    <video id="remoteVideo7" autoplay></video>
+    <video id="remoteVideo8" autoplay></video>
+    <video id="remoteVideo9" autoplay></video>
+    <video id="remoteVideo10" autoplay></video>
+    <video id="remoteVideo11" autoplay></video>
+    <video id="remoteVideo12" autoplay></video>
+    <video id="remoteVideo13" autoplay></video>
+    <video id="remoteVideo14" autoplay></video>
+    <video id="remoteVideo15" autoplay></video>
+    <video id="remoteVideo16" autoplay></video>
+    <video id="remoteVideo17" autoplay></video>
+    <video id="remoteVideo18" autoplay></video>
+    <video id="remoteVideo19" autoplay></video>
+    <video id="remoteVideo20" autoplay></video>
+    <video id="remoteVideo21" autoplay></video>
+    <video id="remoteVideo22" autoplay></video>
+    <video id="remoteVideo23" autoplay></video>
+    <video id="remoteVideo24" autoplay></video>
+    <video id="remoteVideo25" autoplay></video>
+    <video id="remoteVideo26" autoplay></video>
+    <video id="remoteVideo27" autoplay></video>
+    <video id="remoteVideo28" autoplay></video>
+    <video id="remoteVideo29" autoplay></video>
+    <video id="remoteVideo30" autoplay></video>
+    <video id="remoteVideo31" autoplay></video>
+    <video id="remoteVideo32" autoplay></video>
+    <video id="remoteVideo33" autoplay></video>
+    <video id="remoteVideo34" autoplay></video>
+    <video id="remoteVideo35" autoplay></video>
+    <video id="remoteVideo36" autoplay></video>
+    <video id="remoteVideo37" autoplay></video>
+    <video id="remoteVideo38" autoplay></video>
+    <video id="remoteVideo39" autoplay></video>
+    <video id="remoteVideo40" autoplay></video>
+    <video id="remoteVideo41" autoplay></video>
+    <video id="remoteVideo42" autoplay></video>
+    <video id="remoteVideo43" autoplay></video>
+    <video id="remoteVideo44" autoplay></video>
+    <video id="remoteVideo45" autoplay></video>
+    <video id="remoteVideo46" autoplay></video>
+    <video id="remoteVideo47" autoplay></video>
+    <video id="remoteVideo48" autoplay></video>
+    <video id="remoteVideo49" autoplay></video>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="host.js"></script>
+</body>
