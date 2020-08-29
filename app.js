@@ -1,14 +1,21 @@
 const express = require("express");
 const app = express();
-let http = require("http").Server(app);
+const fs = require("fs");
 
-let io = require("socket.io")(http);
+const options = {
+  key: fs.readFileSync("./cert/key.pem"),
+  cert: fs.readFileSync("./cert/cert.pem"),
+};
+
+let https = require("https").Server(options, app);
+
+let io = require("socket.io")(https);
 
 const port = process.env.PORT || 3000;
 
 app.use(express.static("public"));
 
-http.listen(port, () => {
+https.listen(port, () => {
   console.log("listening on port " + port);
 });
 
@@ -43,27 +50,29 @@ io.on("connection", (socket) => {
 
   // establishing RTC connection in 4 steps and server works as msg farworder only
   socket.on("ready", (roomId) => {
+    console.log("ready called");
     socket.broadcast.to(roomId).emit("ready");
   });
 
   socket.on("candidate", (event) => {
+    console.log("ready candidate");
     socket.broadcast.to(event.roomId).emit("candidate", event);
   });
 
   socket.on("offer", (event) => {
+    console.log("ready offer");
     socket.broadcast.to(event.roomId).emit("offer", event.sdp);
   });
 
   socket.on("answer", (event) => {
+    console.log("ready answer");
     socket.broadcast.to(event.roomId).emit("answer", event.sdp);
   });
 
   socket.on("disconnect", (err) => {
     console.log("A user disconnected", err);
-    console.log(socket);
-    console.log(socket.adapter.rooms);
     if (socket.adapter.rooms) {
-      console.log("sendin host a user left");
+      console.log("sending host a user left");
       io.to(Object.keys(socket.adapter.rooms)[0]).emit("AUserLeftRoom", {
         clientId: socket.id,
       });
