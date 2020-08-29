@@ -72,7 +72,7 @@ socket.on("roomJoined", () => {
       localVideo.srcObject = stream;
       // (CLIENT) Sending ready request
       console.log("Raising Ready event");
-      socket.emit("ready", roomId);
+      socket.emit("ready", { roomId, clientId: socket.id });
     })
     .catch((error) => {
       console.log("An error occurred", error);

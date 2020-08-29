@@ -49,9 +49,10 @@ io.on("connection", (socket) => {
   });
 
   // establishing RTC connection in 4 steps and server works as msg farworder only
-  socket.on("ready", (roomId) => {
+  socket.on("ready", (event) => {
     console.log("ready called");
-    socket.broadcast.to(roomId).emit("ready");
+    // Sending to HOST only
+    io.to(Object.keys(socket.adapter.rooms)[0]).emit("ready", event);
   });
 
   socket.on("candidate", (event) => {
