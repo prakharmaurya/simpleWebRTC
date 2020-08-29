@@ -1,15 +1,17 @@
 const express = require("express");
 const app = express();
-const fs = require("fs");
+// const fs = require("fs");
 
-const options = {
-  key: fs.readFileSync("./cert/key.pem"),
-  cert: fs.readFileSync("./cert/cert.pem"),
-};
+// const options = {
+//   key: fs.readFileSync("./cert/key.pem"),
+//   cert: fs.readFileSync("./cert/cert.pem"),
+// };
 
-let https = require("https").Server(options, app);
+// let https = require("https").Server(options, app);
+let http = require("http").Server(app);
 
-let io = require("socket.io")(https);
+// let io = require("socket.io")(https);
+let io = require("socket.io")(http);
 
 const port = process.env.PORT || 3000;
 
