@@ -115,6 +115,7 @@ socket.on("offer", (event) => {
         type: "answer",
         sdp: sessionDescription,
         roomId,
+        clientId: socket.id,
       });
     })
     .catch((err) => {
@@ -133,7 +134,7 @@ socket.on("offer", (event) => {
 });
 
 // (HOST & CLIENT) ICEAgent to CLIENT
-socket.on("candidate", (event) => {
+socket.on("ICEagentFromHost", (event) => {
   console.log("handeling candidate callback");
 
   console.log(
@@ -142,6 +143,7 @@ socket.on("candidate", (event) => {
   const candidate = new RTCIceCandidate({
     sdpMLineIndex: event.label,
     candidate: event.candidate,
+    sdpMid: event.id,
   });
 
   console.log("adding newly defined candidate to rtcPeerConnection", candidate);
@@ -166,12 +168,12 @@ function onIceCandidate(event) {
       "Sending ice candidate data in candidate event",
       event.candidate
     );
-    socket.emit("candidate", {
-      type: "candidate",
+    socket.emit("ICEagentFromClient", {
       label: event.candidate.sdpMLineIndex,
       id: event.candidate.sdpMid,
       candidate: event.candidate.candidate,
       roomId,
+      clientId: socket.id,
     });
   }
 }

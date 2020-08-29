@@ -67,7 +67,7 @@ const roomDetails = {
   roomId: null,
   clients: {},
 };
-let hostDetails, userDetails, localStream, dataChannel;
+let hostDetails, localStream, dataChannel;
 const rtcPeerConnectionList = {};
 
 const iceServer = null;
@@ -161,15 +161,27 @@ socket.on("ready", ({ roomId, clientId }) => {
   );
 
   // (HOST) Creating new RTC Connection
-  rtcPeerConnection = new RTCPeerConnection(iceServer);
+  roomDetails.clients[clientId].rtcPeerConnection = new RTCPeerConnection(
+    iceServer
+  );
   console.log("New rtcPeerConnection Created by HOST");
 
-  rtcPeerConnection.onicecandidate = onIceCandidate;
-  rtcPeerConnection.ontrack = onAddStream;
+  roomDetails.clients[clientId].rtcPeerConnection.onicecandidate = (event) => {
+    onIceCandidate(event, clientId);
+  };
+  roomDetails.clients[clientId].rtcPeerConnection.ontrack = (event) => {
+    onAddStream(event, clientId);
+  };
 
   console.log("Adding localStream Trackes to rtcPeerConnection of HOST");
-  rtcPeerConnection.addTrack(localStream.getTracks()[0], localStream);
-  rtcPeerConnection.addTrack(localStream.getTracks()[1], localStream);
+  roomDetails.clients[clientId].rtcPeerConnection.addTrack(
+    localStream.getTracks()[0],
+    localStream
+  );
+  roomDetails.clients[clientId].rtcPeerConnection.addTrack(
+    localStream.getTracks()[1],
+    localStream
+  );
 
   // // (HOST) Creating new Data stream
   // dataChannel = rtcPeerConnection.createDataChannel(roomId);
@@ -180,13 +192,15 @@ socket.on("ready", ({ roomId, clientId }) => {
 
   // (HOST) Sending RTC Connection
   console.log("rtcPeerConnection is creating new offer for CLIENT");
-  rtcPeerConnection
+  roomDetails.clients[clientId].rtcPeerConnection
     .createOffer(offerOptions)
     .then((_sessionDescription) => {
       sessionDescription = _sessionDescription;
 
       console.log("Setting rtcPeerConnection Local Description ");
-      rtcPeerConnection.setLocalDescription(sessionDescription);
+      roomDetails.clients[clientId].rtcPeerConnection.setLocalDescription(
+        sessionDescription
+      );
       console.log(
         "raising offer event and sending sessionDescription to CLIENT",
         sessionDescription
@@ -195,6 +209,7 @@ socket.on("ready", ({ roomId, clientId }) => {
         type: "offer",
         sdp: sessionDescription,
         roomId: roomDetails.roomId,
+        clientId,
       });
     })
     .catch((err) => {
@@ -206,15 +221,17 @@ socket.on("ready", ({ roomId, clientId }) => {
 socket.on("answer", (event) => {
   console.log("answer callback handled by HOST", event);
 
-  console.log(rtcPeerConnection);
+  console.log(roomDetails.clients[event.clientId].rtcPeerConnection);
   console.log(
     "Setting up remoteDescription in rtcPeerConnection of HOST which is "
   );
-  rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(event));
+  roomDetails.clients[event.clientId].rtcPeerConnection.setRemoteDescription(
+    new RTCSessionDescription(event.sdp)
+  );
 });
 
 // (HOST & CLIENT) ICEAgent to CLIENT
-socket.on("candidate", (event) => {
+socket.on("ICEagentFromClient", (event) => {
   console.log("handeling candidate callback");
 
   console.log(
@@ -223,35 +240,36 @@ socket.on("candidate", (event) => {
   const candidate = new RTCIceCandidate({
     sdpMLineIndex: event.label,
     candidate: event.candidate,
+    sdpMid: event.id,
   });
 
   console.log("adding newly defined candidate to rtcPeerConnection", candidate);
-  rtcPeerConnection.addIceCandidate(candidate);
+  roomDetails.clients[event.clientId].rtcPeerConnection.addIceCandidate(
+    candidate
+  );
 });
 
 // (CLIENT & HOST) sending it's data
-function onAddStream(event) {
+function onAddStream(event, clientId) {
   console.log("adding stream source to HTML video frame");
   console.log("Event and Stream source 0", event);
   if (event.streams[0]) {
-    remoteVideo[0].srcObject = event.streams[0];
+    remoteVideo[Object.keys(roomDetails.clients).indexOf(clientId)].srcObject =
+      event.streams[0];
   }
 }
 
-// (CLIENT) cleint requesing to HOST to add me as candidate
-function onIceCandidate(event) {
+// ICE agent candidate data sending to client
+function onIceCandidate(event, clientId) {
   console.log("Got and ice candidate");
   if (event.candidate) {
-    console.log(
-      "Sending ice candidate data in candidate event",
-      event.candidate
-    );
-    socket.emit("candidate", {
-      type: "candidate",
+    console.log("Sending ice candidate data to client", event.candidate);
+    socket.emit("ICEagentFromHost", {
       label: event.candidate.sdpMLineIndex,
       id: event.candidate.sdpMid,
       candidate: event.candidate.candidate,
       roomId,
+      clientId,
     });
   }
 }

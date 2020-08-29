@@ -32,7 +32,7 @@ io.on("connection", (socket) => {
       socket.join(roomId);
       console.log(socket.id);
       socket.emit("roomCreated");
-    } else if (numClients >= 1 && numClients <= 2) {
+    } else if (numClients >= 1 && numClients <= 49) {
       socket.join(roomId);
       console.log(myRoom);
       // To new Cleint
@@ -55,19 +55,28 @@ io.on("connection", (socket) => {
     io.to(Object.keys(socket.adapter.rooms)[0]).emit("ready", event);
   });
 
-  socket.on("candidate", (event) => {
-    console.log("ready candidate");
-    socket.broadcast.to(event.roomId).emit("candidate", event);
+  socket.on("ICEagentFromHost", (event) => {
+    console.log("ICE agent data from ");
+    io.to(event.roomId).to(event.clientId).emit("ICEagentFromHost", event);
+  });
+
+  socket.on("ICEagentFromClient", (event) => {
+    console.log("ICE agent data from ");
+    io.to(event.roomId)
+      .to(Object.keys(socket.adapter.rooms)[0])
+      .emit("ICEagentFromClient", event);
   });
 
   socket.on("offer", (event) => {
     console.log("ready offer");
-    socket.broadcast.to(event.roomId).emit("offer", event.sdp);
+    // Sending to Client
+    io.to(event.clientId).emit("offer", event.sdp);
   });
 
   socket.on("answer", (event) => {
     console.log("ready answer");
-    socket.broadcast.to(event.roomId).emit("answer", event.sdp);
+    // Sending to Host only
+    io.to(Object.keys(socket.adapter.rooms)[0]).emit("answer", event);
   });
 
   socket.on("disconnect", (err) => {
