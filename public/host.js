@@ -92,11 +92,11 @@ const iceServer = {
 };
 
 const streamConstraints = {
-  // audio: {
-  // echoCancellation: true,
-  // noiseSuppression: true,
-  // autoGainControl: false,
-  // },
+  audio: {
+    // echoCancellation: true,
+    // noiseSuppression: true,
+    // autoGainControl: false,
+  },
   video: {
     width: 250,
     height: 250,
