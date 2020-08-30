@@ -92,21 +92,21 @@ const iceServer = {
 };
 
 const streamConstraints = {
-  audio: {
-    echoCancellation: true,
-    noiseSuppression: true,
-    autoGainControl: false,
-  },
+  // audio: {
+  // echoCancellation: true,
+  // noiseSuppression: true,
+  // autoGainControl: false,
+  // },
   video: {
     width: 250,
     height: 250,
   },
 };
 
-const offerOptions = {
-  offerToReceiveAudio: 1,
-  offerToReceiveVideo: 1,
-};
+// const offerOptions = {
+//   offerToReceiveAudio: 1,
+//   offerToReceiveVideo: 1,
+// };
 
 const socket = io();
 
