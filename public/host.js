@@ -104,8 +104,8 @@ const streamConstraints = {
 };
 
 // const offerOptions = {
-//   offerToReceiveAudio: 1,
-//   offerToReceiveVideo: 1,
+// offerToReceiveAudio: 1,
+// offerToReceiveVideo: 1,
 // };
 
 const socket = io();
@@ -212,7 +212,8 @@ socket.on("ready", ({ roomId, clientId }) => {
   // (HOST) Sending RTC Connection
   console.log("rtcPeerConnection is creating new offer for CLIENT");
   roomDetails.clients[clientId].rtcPeerConnection
-    .createOffer(offerOptions)
+    // .createOffer(offerOptions)
+    .createOffer()
     .then((_sessionDescription) => {
       sessionDescription = _sessionDescription;
 
